@@ -30,7 +30,7 @@ def generate_template(kw):
   template = env.get_template('cfn.jinja')
 
   output = template.render(kw=kw)
-  
+  print(output)
   return output
 
 def read_config(args, kw):
@@ -51,8 +51,8 @@ def read_config(args, kw):
   with open("user_data.sh", "r") as ud:
     user_data = ud.read()
 
-  user_data_bytes = user_data.encode('ascii')
-  user_data_base64 = base64.b64encode(user_data_bytes)
+  user_data_bytes = user_data.encode()
+  user_data_base64 = base64.b64encode(user_data_bytes).decode('ascii')
 
   kw['user_data'] = user_data_base64
 

@@ -5,7 +5,7 @@
     "ebs_type": "gp2",
     "ebs_iops": 100,
     "ebs_delete": true,
-    "instance_profile": "arn:aws:iam::187640475002:role/vraparthi-ec2-role",
+    "instance_profile": "vraparthi-ec2-role",
     "instance_type": "t2.medium",
     "sg": [ "sg-04fde63092b510392" ],
     "azs": [ "us-east-1e" ],
