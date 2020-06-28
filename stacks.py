@@ -5,6 +5,11 @@ import json
 from datetime import datetime
 import base64
 
+CFN_COMPLETE_STATES=['CREATE_COMPLETE', 'UPDATE_COMPLETE']
+CFN_FAILED_STATES= ['ROLLBACK_FAILED','ROLLBACK_COMPLETE', 
+'DELETE_FAILED', 'DELETE_COMPLETE','UPDATE_ROLLBACK_FAILED','UPDATE_ROLLBACK_COMPLETE', 
+'IMPORT_COMPLETE','IMPORT_ROLLBACK_FAILED','IMPORT_ROLLBACK_COMPLETE']
+
 def create_stack(args, kw):
 
   read_config(args, kw)
@@ -12,14 +17,33 @@ def create_stack(args, kw):
 
   client = boto3.client('cloudformation')
 
+  client.validate_template(TemplateBody = data)
+
+  stackName = kw['env'] + "-" + kw['app_name'] + "-" + kw['current_timestamp']
+
   response = client.create_stack(
-    StackName = kw['env'] + "-" + kw['app_name'] + "-" + kw['current_timestamp'],
+    StackName = stackName,
     TemplateBody = data,
     TimeoutInMinutes = 20,
     Tags=kw['tags']
   )
 
   print(response)
+  check_stack_status(client, stackName)
+
+def check_stack_status(client, stackName):
+  while True:
+    response = client.describe_stacks(StackName = stackName)
+    stack_status = response['Stacks']['StackStatus']
+    if stack_status in CFN_COMPLETE_STATES:
+      print("Hurray!!!Stack creation is complete")
+      break
+    elif stack_status in CFN_FAILED_STATES:
+      print("Stack creation failed!!!")
+      print(client.describe_stack_events(StackName = stackName))
+      break
+    else:
+      print("Stack is in {}".format(stack_status))
 
 def generate_template(kw):
   template_data = ""
