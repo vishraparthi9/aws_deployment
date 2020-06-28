@@ -4,6 +4,7 @@ import argparse
 import json
 from datetime import datetime
 import base64
+import time
 
 CFN_COMPLETE_STATES=['CREATE_COMPLETE', 'UPDATE_COMPLETE']
 CFN_FAILED_STATES= ['ROLLBACK_FAILED','ROLLBACK_COMPLETE', 
@@ -44,6 +45,7 @@ def check_stack_status(client, stackName):
       break
     else:
       print("Stack is in {}".format(stack_status))
+      time.sleep(30)
 
 def generate_template(kw):
   template_data = ""
