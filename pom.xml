@@ -7,6 +7,16 @@
   <name>AWS Cloud Apps Deployment</name>
 
   <build>
+    <resources>
+      <resource>
+        <directory>.</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>user_data.sh</include>
+        </includes>
+      </resource>
+    </resources>
+
     <plugins>
       <plugin>
         <groupId>pl.project13.maven</groupId>

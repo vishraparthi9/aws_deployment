@@ -9,8 +9,8 @@ cd /tmp/ && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "
 
 cd /tmp/ && curl -L -O https://www.getchef.com/chef/install.sh && chmod 755 install.sh && ./install.sh && rm -f install.sh
 
-aws s3 cp s3://vraparthi-cicd-testing/helloworld_chef/helloworld-$1-$2.tar.gz /tmp/
+aws s3 cp s3://vraparthi-cicd-testing/helloworld_chef/helloworld-${CI_GIT_COMMIT}-${CD_GIT_COMMIT}.tar.gz /tmp/
 
-tar -xzf /tmp/helloworld-$1-$2.tar.gz
+tar -xzf /tmp/helloworld-${CI_GIT_COMMIT}-${CD_GIT_COMMIT}.tar.gz
 
 cd /tmp/ && chef-client -z --chef-license 'accept' -c /tmp/.chef/config.rb
