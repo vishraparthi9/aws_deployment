@@ -30,7 +30,7 @@ def generate_template(kw):
   template = env.get_template('cfn.jinja')
 
   output = template.render(kw=kw)
-  print(output)
+
   return output
 
 def read_config(args, kw):
