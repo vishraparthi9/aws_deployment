@@ -34,7 +34,7 @@ def create_stack(args, kw):
 def check_stack_status(client, stackName):
   while True:
     response = client.describe_stacks(StackName = stackName)
-    stack_status = response['Stacks']['StackStatus']
+    stack_status = response['Stacks'][0]['StackStatus']
     if stack_status in CFN_COMPLETE_STATES:
       print("Hurray!!!Stack creation is complete")
       break
