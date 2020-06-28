@@ -13,10 +13,13 @@ def create_stack(args, kw):
   client = boto3.client('cloudformation')
 
   response = client.create_stack(
-    StackName = kw['env'] + "_" + kw['app_name'] + "_" + kw['current_timestamp'],
-    TemplateBody = body,
-    TimeoutInMinutes = 20
+    StackName = kw['env'] + "-" + kw['app_name'] + "-" + kw['current_timestamp'],
+    TemplateBody = data,
+    TimeoutInMinutes = 20,
+    Tags=kw['tags']
   )
+
+  print(response)
 
 def generate_template(kw):
   template_data = ""
@@ -27,14 +30,14 @@ def generate_template(kw):
   template = env.get_template('cfn.jinja')
 
   output = template.render(kw=kw)
-
+  
   return output
 
 def read_config(args, kw):
 
   kw['current_timestamp'] = datetime.now().isoformat().replace(':','').replace('.','').replace('-','')
   kw['env'] = args.env
-  
+
   with open(args.accConfigFile, "r") as account_config_file:
     kw1 = json.load(account_config_file)[args.account]
 
@@ -52,6 +55,40 @@ def read_config(args, kw):
   user_data_base64 = base64.b64encode(user_data_bytes)
 
   kw['user_data'] = user_data_base64
+
+  tags=[
+        {
+            'Key': 'bu',
+            'Value': kw['bu']
+        },
+        {
+            'Key': 'product',
+            'Value': kw['product']
+        },
+        {
+            'Key': 'env',
+            'Value': kw['env']
+        }
+  ]
+  asg_tags=[
+        {
+            'Key': 'bu',
+            'Value': kw['bu'],
+            'PropagateAtLaunch': 'true'
+        },
+        {
+            'Key': 'product',
+            'Value': kw['product'],
+            'PropagateAtLaunch': 'true'
+        },
+        {
+            'Key': 'env',
+            'Value': kw['env'],
+            'PropagateAtLaunch': 'true'
+        }
+  ]
+  kw['tags'] = tags
+  kw['asg_tags'] = asg_tags
 
 if __name__ == "__main__":
 

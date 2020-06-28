@@ -2,7 +2,7 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Template to deploy {{ kw['app_name'] }} in {{ kw['env'] }} ",
   "Resources": {
-    "lc_{{ kw['env'] }}_{{ kw['app_name'] }}_{{ kw['current_timestamp'] }}": {
+    "lc{{ kw['env'] }}{{ kw['app_name'] }}": {
       "Type" : "AWS::AutoScaling::LaunchConfiguration",
       "Properties": {
         "AssociatePublicIpAddress": true,
@@ -11,17 +11,20 @@
         "ImageId": "{{ kw['ami'] }}",
         "InstanceType": "{{ kw['instance_type'] }}",
         "KeyName": "{{ kw['key_name'] }}",
-        "SecurityGroups": "{{ kw['sg'] }}",
+        "LaunchConfigurationName": "lc-{{ kw['env'] }}-{{ kw['app_name'] }}-{{ kw['current_timestamp'] }}",
+        "SecurityGroups": {{ kw['sg'] }},
         "UserData": "{{ kw['user_data'] }}"
       }
     },
 
-    "asg_{{ kw['env'] }}_{{ kw['app_name'] }}_{{ kw['current_timestamp'] }}": {
+    "asg{{ kw['env'] }}{{ kw['app_name'] }}": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "DependsOn": [ "lc{{ kw['env'] }}{{ kw['app_name'] }}" ],
       "Properties": {
+        "AutoScalingGroupName": "asg-{{ kw['env'] }}-{{ kw['app_name'] }}-{{ kw['current_timestamp'] }}",
         "AvailabilityZones": {{ kw['azs'] }},
         "DesiredCapacity": {{ kw['asg_desired'] }},
-        "LaunchConfigurationName": "lc_{{ kw['env'] }}_{{ kw['app_name'] }}_{{ kw['current_timestamp'] }}",
+        "LaunchConfigurationName": "lc-{{ kw['env'] }}-{{ kw['app_name'] }}-{{ kw['current_timestamp'] }}",
         "MaxSize": {{ kw['asg_max'] }},
         "MinSize": {{ kw['asg_min'] }},
         "Tags": {{ kw['asg_tags'] }}
