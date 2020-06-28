@@ -1,5 +1,8 @@
 #!/bin/bash
 
+exec > >(tee -i /var/log/user-data.log)
+exec 2>&1
+
 yum install -y unzip
 
 cd /tmp/ && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && sudo ./aws/install
