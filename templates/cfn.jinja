@@ -1,0 +1,36 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Template to deploy {{ kw['app_name'] }} in {{ kw['env'] }} ",
+  "Resources": {
+    "lc_{{ kw['env'] }}_{{ kw['app_name'] }}_{{ kw['current_timestamp'] }}": {
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Properties": {
+        "AssociatePublicIpAddress": true,
+        "BlockDeviceMappings": [ { "DeviceName": "/dev/sda1", "Ebs": { "VolumeSize": "{{ kw['ebs_size'] }}", "VolumeType": "{{ kw['ebs_type'] }}", "Iops": "{{ kw['ebs_iops'] }}", "DeleteOnTermination": "{{ kw['ebs_delete'] }}"   } } ],
+        "IamInstanceProfile": "{{ kw['instance_profile'] }}",
+        "ImageId": "{{ kw['ami'] }}",
+        "InstanceType": "{{ kw['instance_type'] }}",
+        "KeyName": "{{ kw['key_name'] }}",
+        "SecurityGroups": "{{ kw['sg'] }}",
+        "UserData": "{{ kw['user_data'] }}"
+      }
+    },
+
+    "asg_{{ kw['env'] }}_{{ kw['app_name'] }}_{{ kw['current_timestamp'] }}": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "AvailabilityZones": {{ kw['azs'] }},
+        "DesiredCapacity": {{ kw['asg_desired'] }},
+        "LaunchConfigurationName": "lc_{{ kw['env'] }}_{{ kw['app_name'] }}_{{ kw['current_timestamp'] }}",
+        "MaxSize": {{ kw['asg_max'] }},
+        "MinSize": {{ kw['asg_min'] }},
+        "Tags": {{ kw['asg_tags'] }}
+      }
+
+    }
+
+  },
+  "Outputs": {
+
+  }
+}

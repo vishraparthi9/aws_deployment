@@ -1,0 +1,6 @@
+{
+  "nonprod": {
+    "ami": "ami-4bf3d731",
+    "key_name": "vraparthi"
+  }
+}
